@@ -3,38 +3,39 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hello World // SYSTEM_LUCAS</title>
+    <title>LUCAS NEXUS // TASK_MODULE</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         :root {
             --neon-cyan: #00f3ff;
             --neon-pink: #ff00ff;
             --bg-color: #050505;
+            --glass: rgba(10, 10, 10, 0.7);
         }
 
         body {
             margin: 0;
             padding: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
             min-height: 100vh;
             background-color: var(--bg-color);
             background-image: 
                 linear-gradient(rgba(0, 243, 255, 0.03) 1px, transparent 1px),
                 linear-gradient(90deg, rgba(0, 243, 255, 0.03) 1px, transparent 1px);
             background-size: 30px 30px;
-            font-family: 'Orbitron', sans-serif;
+            font-family: 'Share Tech Mono', monospace;
             color: white;
-            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
         }
 
-        /* Scanline effect */
+        /* Scanline */
         body::after {
             content: "";
-            position: absolute;
+            position: fixed;
             top: 0;
             left: 0;
             width: 100vw;
@@ -42,115 +43,254 @@
             background: linear-gradient(to bottom, transparent 50%, rgba(0, 0, 0, 0.3) 51%);
             background-size: 100% 4px;
             pointer-events: none;
-            z-index: 10;
+            z-index: 999;
+        }
+
+        .header {
+            width: 100%;
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--neon-cyan);
+            background: var(--glass);
+            backdrop-filter: blur(5px);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        h1 {
+            font-family: 'Orbitron', sans-serif;
+            color: var(--neon-cyan);
+            margin: 0;
+            font-size: 1.5rem;
+            text-shadow: 0 0 10px rgba(0, 243, 255, 0.5);
         }
 
         .container {
-            position: relative;
-            z-index: 2;
-            text-align: center;
-            padding: 60px 80px;
-            border: 2px solid var(--neon-cyan);
-            background: rgba(5, 5, 5, 0.8);
-            box-shadow: 0 0 20px rgba(0, 243, 255, 0.2), inset 0 0 40px rgba(0, 243, 255, 0.1);
-            backdrop-filter: blur(10px);
-            clip-path: polygon(
-                0 0, 100% 0, 100% 85%, 95% 100%, 0 100%, 0 15%
-            );
-        }
-
-        /* Glitch Text Effect */
-        h1 {
-            font-size: 5rem;
-            margin: 0;
-            position: relative;
-            text-transform: uppercase;
-            letter-spacing: 0.1em;
-            color: white;
-            text-shadow: 2px 2px var(--neon-pink), -2px -2px var(--neon-cyan);
-            animation: glitch-skew 1s infinite linear alternate-reverse;
-        }
-
-        h1::before, h1::after {
-            content: attr(data-text);
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-        }
-
-        h1::before {
-            left: 2px;
-            text-shadow: -1px 0 var(--neon-pink);
-            clip: rect(44px, 450px, 56px, 0);
-            animation: glitch-anim 5s infinite linear alternate-reverse;
-        }
-
-        h1::after {
-            left: -2px;
-            text-shadow: -1px 0 var(--neon-cyan);
-            clip: rect(44px, 450px, 56px, 0);
-            animation: glitch-anim2 5s infinite linear alternate-reverse;
-        }
-
-        p {
-            font-family: 'Share Tech Mono', monospace;
-            color: var(--neon-cyan);
-            font-size: 1.2rem;
-            margin-top: 20px;
-            letter-spacing: 0.2em;
-            text-transform: uppercase;
-        }
-
-        .system-status {
+            width: 90%;
+            max-width: 600px;
             margin-top: 40px;
-            display: inline-block;
-            border: 1px solid var(--neon-pink);
-            padding: 8px 24px;
-            color: var(--neon-pink);
-            font-family: 'Share Tech Mono', monospace;
-            font-size: 0.9rem;
-            box-shadow: 0 0 10px rgba(255, 0, 255, 0.3);
             position: relative;
+            z-index: 1;
         }
 
-        .system-status::before {
-            content: '';
-            position: absolute;
-            width: 10px;
-            height: 10px;
-            background: var(--neon-pink);
-            left: -5px;
-            top: 50%;
-            transform: translateY(-50%);
+        .auth-container {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        button {
+            background: transparent;
+            border: 1px solid var(--neon-cyan);
+            color: var(--neon-cyan);
+            padding: 10px 20px;
+            font-family: 'Orbitron', sans-serif;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-transform: uppercase;
+            box-shadow: 0 0 5px var(--neon-cyan);
+        }
+
+        button:hover {
+            background: var(--neon-cyan);
+            color: black;
+            box-shadow: 0 0 20px var(--neon-cyan);
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 15px;
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid var(--neon-pink);
+            color: white;
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 1.1rem;
+            outline: none;
+            margin-bottom: 20px;
+            box-sizing: border-box;
+        }
+
+        input[type="text"]:focus {
             box-shadow: 0 0 10px var(--neon-pink);
         }
 
-        @keyframes glitch-anim {
-            0% { clip: rect(12px, 9999px, 81px, 0); }
-            20% { clip: rect(68px, 9999px, 19px, 0); }
-            40% { clip: rect(3px, 9999px, 57px, 0); }
-            60% { clip: rect(89px, 9999px, 2px, 0); }
-            80% { clip: rect(24px, 9999px, 46px, 0); }
-            100% { clip: rect(55px, 9999px, 92px, 0); }
+        ul {
+            list-style: none;
+            padding: 0;
         }
 
-        @keyframes glitch-anim2 {
-            0% { clip: rect(65px, 9999px, 10px, 0); }
-            20% { clip: rect(2px, 9999px, 95px, 0); }
-            40% { clip: rect(33px, 9999px, 12px, 0); }
-            60% { clip: rect(12px, 9999px, 66px, 0); }
-            80% { clip: rect(87px, 9999px, 4px, 0); }
-            100% { clip: rect(45px, 9999px, 23px, 0); }
+        li {
+            background: rgba(20, 20, 20, 0.8);
+            border-left: 3px solid var(--neon-cyan);
+            padding: 15px;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: transform 0.2s;
+        }
+
+        li:hover {
+            transform: translateX(5px);
+            background: rgba(30, 30, 30, 0.9);
+        }
+
+        li.completed {
+            border-left-color: #333;
+            opacity: 0.5;
+            text-decoration: line-through;
+        }
+
+        .delete-btn {
+            border-color: var(--neon-pink);
+            color: var(--neon-pink);
+            padding: 5px 10px;
+            font-size: 0.8rem;
+            box-shadow: none;
+        }
+
+        .delete-btn:hover {
+            background: var(--neon-pink);
+            color: white;
+            box-shadow: 0 0 10px var(--neon-pink);
+        }
+
+        #app-interface {
+            display: none; /* Hidden until login */
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1 data-text="HELLO WORLD">HELLO WORLD</h1>
-        <p>Designed for Lucas</p>
-        <div class="system-status">SYSTEM :: ONLINE</div>
+
+    <div class="header">
+        <h1>LUCAS_NEXUS //</h1>
+        <div id="user-info">SYSTEM: GUEST</div>
     </div>
+
+    <div class="container">
+        <!-- Auth Section -->
+        <div id="auth-section" class="auth-container">
+            <p>ACCESS RESTRICTED. IDENTIFICATION REQUIRED.</p>
+            <button onclick="signIn()">INITIALIZE LOGIN_SEQUENCE</button>
+        </div>
+
+        <!-- App Interface -->
+        <div id="app-interface">
+            <input type="text" id="new-task" placeholder="INPUT NEW DIRECTIVE..." onkeypress="handleEnter(event)">
+            <ul id="todo-list">
+                <!-- Tasks will appear here -->
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        // Initialize Supabase (Values from our Setup)
+        const supabaseUrl = 'https://dfezoyzuztglatfmmysr.supabase.co'
+        const supabaseKey = 'sb_publishable_sOO2RWlv_1M4VLWRo2w9cA_BJUc9fAL' // PUBLIC ANON KEY
+        const supabase = supabase.createClient(supabaseUrl, supabaseKey)
+
+        // Auth State Listener
+        supabase.auth.onAuthStateChange((event, session) => {
+            const authSection = document.getElementById('auth-section')
+            const appInterface = document.getElementById('app-interface')
+            const userInfo = document.getElementById('user-info')
+
+            if (session) {
+                authSection.style.display = 'none'
+                appInterface.style.display = 'block'
+                userInfo.innerText = 'OPERATOR: ' + session.user.email
+                fetchTodos()
+            } else {
+                authSection.style.display = 'block'
+                appInterface.style.display = 'none'
+                userInfo.innerText = 'SYSTEM: GUEST'
+            }
+        })
+
+        async function signIn() {
+            const { data, error } = await supabase.auth.signInWithOAuth({
+                provider: 'google',
+                options: {
+                    redirectTo: window.location.href
+                }
+            })
+        }
+
+        async function signOut() {
+            const { error } = await supabase.auth.signOut()
+        }
+
+        async function fetchTodos() {
+            const { data, error } = await supabase
+                .from('todos')
+                .select('*')
+                .order('id', { ascending: false })
+            
+            if (error) console.error('Error fetching:', error)
+            else renderTodos(data)
+        }
+
+        async function addTodo() {
+            const input = document.getElementById('new-task')
+            const task = input.value.trim()
+            if (!task) return
+
+            const { data, error } = await supabase
+                .from('todos')
+                .insert([{ task: task }])
+                .select()
+
+            if (error) {
+                console.error('Error adding:', error)
+                alert('ERROR: WRITE_PERMISSION_DENIED')
+            } else {
+                input.value = ''
+                fetchTodos()
+            }
+        }
+
+        async function deleteTodo(id) {
+            const { error } = await supabase
+                .from('todos')
+                .delete()
+                .eq('id', id)
+
+            if (error) console.error('Error deleting:', error)
+            else fetchTodos()
+        }
+
+        async function toggleTodo(id, currentStatus) {
+            const { error } = await supabase
+                .from('todos')
+                .update({ is_complete: !currentStatus })
+                .eq('id', id)
+
+            if (error) console.error('Error updating:', error)
+            else fetchTodos()
+        }
+
+        function renderTodos(todos) {
+            const list = document.getElementById('todo-list')
+            list.innerHTML = ''
+            todos.forEach(todo => {
+                const li = document.createElement('li')
+                if (todo.is_complete) li.classList.add('completed')
+                
+                li.innerHTML = `
+                    <span onclick="toggleTodo(${todo.id}, ${todo.is_complete})" style="cursor:pointer; flex-grow:1">
+                        [${todo.is_complete ? 'X' : ' '}] ${todo.task}
+                    </span>
+                    <button class="delete-btn" onclick="deleteTodo(${todo.id})">TERMINATE</button>
+                `
+                list.appendChild(li)
+            })
+        }
+
+        function handleEnter(e) {
+            if (e.key === 'Enter') addTodo()
+        }
+    </script>
 </body>
 </html>
