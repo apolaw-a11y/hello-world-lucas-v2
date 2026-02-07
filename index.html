@@ -173,11 +173,15 @@
         <!-- Auth Section -->
         <div id="auth-section" class="auth-container">
             <p>ACCESS RESTRICTED. IDENTIFICATION REQUIRED.</p>
-            <button onclick="signIn()">INITIALIZE LOGIN_SEQUENCE</button>
+            <input type="email" id="email-input" placeholder="ENTER_EMAIL_ADDRESS" style="margin-bottom: 10px;">
+            <button onclick="signIn()">SEND MAGIC LINK</button>
         </div>
 
         <!-- App Interface -->
         <div id="app-interface">
+            <div style="text-align: right; margin-bottom: 10px;">
+                <button onclick="signOut()" style="font-size: 0.8rem; padding: 5px 10px;">LOGOUT</button>
+            </div>
             <input type="text" id="new-task" placeholder="INPUT NEW DIRECTIVE..." onkeypress="handleEnter(event)">
             <ul id="todo-list">
                 <!-- Tasks will appear here -->
@@ -210,12 +214,18 @@
         })
 
         async function signIn() {
-            const { data, error } = await supabase.auth.signInWithOAuth({
-                provider: 'google',
+            const email = document.getElementById('email-input').value
+            if (!email) return alert('EMAIL REQUIRED')
+            
+            const { data, error } = await supabase.auth.signInWithOtp({
+                email: email,
                 options: {
-                    redirectTo: window.location.href
+                    emailRedirectTo: window.location.href
                 }
             })
+            
+            if (error) alert('ERROR: ' + error.message)
+            else alert('LINK SENT. CHECK YOUR INBOX.')
         }
 
         async function signOut() {
