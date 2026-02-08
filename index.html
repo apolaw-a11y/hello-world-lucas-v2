@@ -3,130 +3,255 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LUCAS NEXUS // 任務中控台</title>
+    <title>LUCAS NEXUS</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&family=Orbitron:wght@700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Orbitron:wght@700&display=swap" rel="stylesheet">
     <style>
+        /* ===== Design Tokens ===== */
         :root {
-            --primary: #0ea5e9;    /* Sky Blue */
-            --accent: #f43f5e;     /* Rose Red */
-            --bg-color: #0f172a;   /* Slate 900 */
-            --card-bg: #1e293b;    /* Slate 800 */
-            --text-main: #f8fafc;  /* Slate 50 */
-            --text-muted: #94a3b8; /* Slate 400 */
+            --primary: #0ea5e9;
+            --primary-glow: rgba(14, 165, 233, 0.15);
+            --accent: #f43f5e;
+            --success: #22c55e;
+            --bg: #0f172a;
+            --bg-elevated: #1e293b;
+            --bg-hover: #273548;
+            --border: #334155;
+            --text: #f8fafc;
+            --text-secondary: #94a3b8;
+            --text-muted: #64748b;
+            --radius: 12px;
+            --radius-sm: 8px;
+            --shadow: 0 4px 12px rgba(0,0,0,0.25);
+            --transition: 0.2s ease;
         }
 
+        /* ===== Reset & Base ===== */
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
         body {
-            margin: 0;
-            padding: 0;
             min-height: 100vh;
-            background-color: var(--bg-color);
-            color: var(--text-main);
-            font-family: 'Inter', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            font-family: 'Inter', -apple-system, sans-serif;
             display: flex;
             flex-direction: column;
             align-items: center;
+            -webkit-font-smoothing: antialiased;
         }
 
-        .header {
+        /* ===== Layout Shell ===== */
+        .app-header {
             width: 100%;
-            max-width: 600px;
-            padding: 40px 20px 20px;
+            max-width: 640px;
+            padding: 32px 20px 16px;
             display: flex;
             justify-content: space-between;
             align-items: center;
         }
 
-        h1 {
+        .app-logo {
             font-family: 'Orbitron', sans-serif;
+            font-size: 1.4rem;
             color: var(--primary);
-            margin: 0;
-            font-size: 1.5rem;
             letter-spacing: 1px;
+            cursor: pointer;
+            text-decoration: none;
         }
 
-        .status-badge {
+        .app-badge {
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            border: 1px solid var(--border);
+            padding: 3px 10px;
+            border-radius: 99px;
+            background: rgba(255,255,255,0.03);
+        }
+
+        #app {
+            width: 100%;
+            max-width: 640px;
+            padding: 0 20px 40px;
+            flex: 1;
+        }
+
+        .app-footer {
+            width: 100%;
+            text-align: center;
+            padding: 20px;
+            color: var(--text-muted);
+            font-size: 0.7rem;
+        }
+
+        /* ===== Home Page ===== */
+        .home-greeting {
+            margin: 40px 0 12px;
+            font-size: 1.6rem;
+            font-weight: 700;
+        }
+
+        .home-subtitle {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            margin-bottom: 40px;
+        }
+
+        .home-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+        .home-card {
+            background: var(--bg-elevated);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 28px 20px;
+            cursor: pointer;
+            text-decoration: none;
+            color: var(--text);
+            transition: transform var(--transition), border-color var(--transition), box-shadow var(--transition);
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .home-card:hover {
+            transform: translateY(-3px);
+            border-color: var(--primary);
+            box-shadow: 0 8px 24px rgba(14, 165, 233, 0.1);
+        }
+
+        .home-card-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: var(--radius-sm);
+            background: var(--primary-glow);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.4rem;
+        }
+
+        .home-card-title {
+            font-size: 1.05rem;
+            font-weight: 600;
+        }
+
+        .home-card-desc {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            line-height: 1.5;
+        }
+
+        .home-card-count {
             font-size: 0.75rem;
             color: var(--text-muted);
-            border: 1px solid #334155;
-            padding: 4px 10px;
-            border-radius: 99px;
-            background: rgba(255,255,255,0.05);
+            margin-top: auto;
+            padding-top: 8px;
+            border-top: 1px solid var(--border);
         }
 
-        .container {
-            width: 100%;
-            max-width: 600px;
-            padding: 0 20px;
-            box-sizing: border-box;
+        /* ===== Shared: Page Header ===== */
+        .page-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin: 24px 0 20px;
         }
 
-        .input-group {
+        .back-btn {
+            background: none;
+            border: 1px solid var(--border);
+            color: var(--text-secondary);
+            width: 36px;
+            height: 36px;
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+            transition: border-color var(--transition), color var(--transition);
+        }
+
+        .back-btn:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+
+        .page-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+        }
+
+        /* ===== Tasks Page ===== */
+        .task-input-group {
             display: flex;
             gap: 10px;
-            margin-bottom: 30px;
+            margin-bottom: 24px;
         }
 
-        input[type="text"] {
-            flex-grow: 1;
+        .task-input {
+            flex: 1;
             padding: 12px 16px;
-            background: var(--card-bg);
-            border: 1px solid #334155;
-            border-radius: 8px;
-            color: white;
-            font-size: 1rem;
+            background: var(--bg-elevated);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            color: var(--text);
+            font-size: 0.95rem;
+            font-family: inherit;
             outline: none;
-            transition: border-color 0.2s;
+            transition: border-color var(--transition);
         }
 
-        input[type="text"]:focus {
+        .task-input:focus {
             border-color: var(--primary);
         }
 
-        button.add-btn {
+        .task-input::placeholder {
+            color: var(--text-muted);
+        }
+
+        .btn-primary {
             background: var(--primary);
             color: white;
             border: none;
             padding: 0 20px;
-            border-radius: 8px;
+            border-radius: var(--radius-sm);
             font-weight: 600;
+            font-family: inherit;
             cursor: pointer;
-            transition: opacity 0.2s;
+            transition: opacity var(--transition);
+            white-space: nowrap;
         }
 
-        button.add-btn:hover {
-            opacity: 0.9;
-        }
+        .btn-primary:hover { opacity: 0.85; }
 
-        ul {
+        .task-list {
             list-style: none;
-            padding: 0;
-            margin: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
         }
 
-        li {
-            background: var(--card-bg);
-            padding: 16px;
-            margin-bottom: 12px;
-            border-radius: 8px;
+        .task-item {
+            background: var(--bg-elevated);
+            border: 1px solid var(--border);
+            padding: 14px 16px;
+            border-radius: var(--radius-sm);
             display: flex;
             align-items: center;
             gap: 12px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            transition: transform 0.2s;
+            transition: transform var(--transition);
         }
 
-        li:hover {
-            transform: translateY(-2px);
+        .task-item:hover {
+            transform: translateX(3px);
         }
 
-        li.completed span {
-            color: var(--text-muted);
-            text-decoration: line-through;
-        }
-
-        .checkbox {
+        .task-checkbox {
             width: 20px;
             height: 20px;
             border: 2px solid var(--text-muted);
@@ -135,134 +260,437 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            transition: all 0.2s;
+            flex-shrink: 0;
+            transition: all var(--transition);
         }
 
-        li.completed .checkbox {
+        .task-item.completed .task-checkbox {
             background: var(--primary);
             border-color: var(--primary);
         }
 
-        li.completed .checkbox::after {
-            content: '✓';
+        .task-item.completed .task-checkbox::after {
+            content: '\2713';
             color: white;
-            font-size: 14px;
+            font-size: 12px;
             font-weight: bold;
         }
 
-        span.task-text {
-            flex-grow: 1;
-            font-size: 0.95rem;
+        .task-text {
+            flex: 1;
+            font-size: 0.9rem;
             line-height: 1.5;
             cursor: pointer;
         }
 
-        .delete-btn {
-            background: transparent;
-            border: none;
-            color: #475569;
-            cursor: pointer;
-            padding: 5px;
-            font-size: 1.2rem;
-            transition: color 0.2s;
+        .task-item.completed .task-text {
+            color: var(--text-muted);
+            text-decoration: line-through;
         }
 
-        .delete-btn:hover {
+        .task-delete {
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            cursor: pointer;
+            padding: 4px;
+            font-size: 1.1rem;
+            transition: color var(--transition);
+            opacity: 0;
+        }
+
+        .task-item:hover .task-delete {
+            opacity: 1;
+        }
+
+        .task-delete:hover {
             color: var(--accent);
+        }
+
+        .task-empty {
+            text-align: center;
+            padding: 40px 0;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        .task-stats {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 20px;
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+
+        .task-stats span {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .stat-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            display: inline-block;
+        }
+
+        .stat-dot.pending { background: var(--primary); }
+        .stat-dot.done { background: var(--success); }
+
+        /* ===== Timeline Page ===== */
+        .timeline-container {
+            position: relative;
+            padding-left: 28px;
+        }
+
+        .timeline-container::before {
+            content: '';
+            position: absolute;
+            left: 8px;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: var(--border);
+        }
+
+        .timeline-item {
+            position: relative;
+            margin-bottom: 24px;
+        }
+
+        .timeline-dot {
+            position: absolute;
+            left: -24px;
+            top: 4px;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: var(--primary);
+            border: 2px solid var(--bg);
+        }
+
+        .timeline-date {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            margin-bottom: 4px;
+        }
+
+        .timeline-content {
+            background: var(--bg-elevated);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            padding: 14px 16px;
+        }
+
+        .timeline-title {
+            font-weight: 600;
+            font-size: 0.9rem;
+            margin-bottom: 4px;
+        }
+
+        .timeline-desc {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            line-height: 1.5;
+        }
+
+        .timeline-empty {
+            text-align: center;
+            padding: 40px 0;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        .timeline-add-group {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 24px;
+        }
+
+        /* ===== Responsive ===== */
+        @media (max-width: 480px) {
+            .home-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .home-greeting {
+                font-size: 1.3rem;
+            }
         }
     </style>
 </head>
 <body>
 
-    <div class="header">
-        <h1>LUCAS NEXUS //</h1>
-        <div class="status-badge">本地儲存模式</div>
-    </div>
+    <!-- Header -->
+    <header class="app-header">
+        <a class="app-logo" href="#/" onclick="Router.go('/')">LUCAS NEXUS</a>
+        <span class="app-badge" id="mode-badge">LOCAL</span>
+    </header>
 
-    <div class="container">
-        <div class="input-group">
-            <input type="text" id="new-task" placeholder="輸入新任務..." onkeypress="handleEnter(event)">
-            <button class="add-btn" onclick="addTodo()">新增</button>
-        </div>
+    <!-- SPA Mount Point -->
+    <main id="app"></main>
 
-        <ul id="todo-list">
-            <!-- Tasks will appear here -->
-        </ul>
-    </div>
+    <!-- Footer -->
+    <footer class="app-footer">LUCAS NEXUS v2 &mdash; Built with discipline.</footer>
 
     <script>
-        // 預設資料 (中文化)
-        const DEFAULT_TODOS = [
-            { id: 1, task: "[權限] 重新啟用 Email 登入 (等待限制解除)", is_complete: false },
-            { id: 2, task: "[權限] 驗證 RLS 資料庫安全規則", is_complete: false },
-            { id: 3, task: "[功能] 開發時間軸模組 (成長歷史)", is_complete: false },
-            { id: 4, task: "[權限] 啟用 Google 帳號登入 (GCP 設定)", is_complete: false },
-            { id: 5, task: "[技術] 評估遷移至 Vite+React 框架", is_complete: false }
-        ]
+    /* =========================================================
+       DATA SERVICE — Abstract layer (localStorage now, Supabase later)
+       ========================================================= */
+    const DataService = (() => {
+        const STORAGE_KEY = 'nexus_data';
 
-        // Load from LocalStorage or use Default
-        let todos = JSON.parse(localStorage.getItem('lucas_todos')) || DEFAULT_TODOS
+        // Default data structure
+        const DEFAULT_DATA = {
+            tasks: [
+                { id: 1, text: '完成 NEXUS v2 首頁設計', done: false, created: '2026-02-08' },
+                { id: 2, text: '建立任務清單 CRUD 功能', done: false, created: '2026-02-08' },
+                { id: 3, text: '設計成長時間軸介面', done: false, created: '2026-02-08' },
+            ],
+            timeline: [
+                { id: 1, date: '2026-02-08', title: 'NEXUS v2 啟動', desc: '重新設計系統架構，建立 SPA 基礎結構。' },
+            ]
+        };
 
-        function saveTodos() {
-            localStorage.setItem('lucas_todos', JSON.stringify(todos))
-            renderTodos()
+        function load() {
+            const raw = localStorage.getItem(STORAGE_KEY);
+            return raw ? JSON.parse(raw) : JSON.parse(JSON.stringify(DEFAULT_DATA));
         }
 
-        function addTodo() {
-            const input = document.getElementById('new-task')
-            const taskText = input.value.trim()
-            if (!taskText) return
+        function save(data) {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+        }
 
-            const newTodo = {
+        // --- Tasks ---
+        function getTasks() { return load().tasks; }
+
+        function addTask(text) {
+            const data = load();
+            const task = {
                 id: Date.now(),
-                task: taskText,
-                is_complete: false
-            }
-
-            todos.unshift(newTodo)
-            saveTodos()
-            input.value = ''
+                text,
+                done: false,
+                created: new Date().toISOString().slice(0, 10)
+            };
+            data.tasks.unshift(task);
+            save(data);
+            return task;
         }
 
-        function deleteTodo(id) {
-            todos = todos.filter(t => t.id !== id)
-            saveTodos()
+        function toggleTask(id) {
+            const data = load();
+            const t = data.tasks.find(t => t.id === id);
+            if (t) t.done = !t.done;
+            save(data);
         }
 
-        function toggleTodo(id) {
-            todos = todos.map(t => {
-                if (t.id === id) return { ...t, is_complete: !t.is_complete }
-                return t
-            })
-            saveTodos()
+        function deleteTask(id) {
+            const data = load();
+            data.tasks = data.tasks.filter(t => t.id !== id);
+            save(data);
         }
 
-        function renderTodos() {
-            const list = document.getElementById('todo-list')
-            list.innerHTML = ''
-            todos.forEach(todo => {
-                const li = document.createElement('li')
-                if (todo.is_complete) li.classList.add('completed')
-                
-                li.innerHTML = `
-                    <div class="checkbox" onclick="toggleTodo(${todo.id})"></div>
-                    <span class="task-text" onclick="toggleTodo(${todo.id})">${todo.task}</span>
-                    <button class="delete-btn" onclick="deleteTodo(${todo.id})" title="刪除">×</button>
-                `
-                list.appendChild(li)
-            })
+        // --- Timeline ---
+        function getTimeline() { return load().timeline; }
+
+        function addTimelineEntry(title, desc) {
+            const data = load();
+            const entry = {
+                id: Date.now(),
+                date: new Date().toISOString().slice(0, 10),
+                title,
+                desc
+            };
+            data.timeline.unshift(entry);
+            save(data);
+            return entry;
         }
 
-        function handleEnter(e) {
-            if (e.key === 'Enter') addTodo()
+        function deleteTimelineEntry(id) {
+            const data = load();
+            data.timeline = data.timeline.filter(e => e.id !== id);
+            save(data);
         }
 
-        // Initial Render
-        renderTodos()
+        // Public API — same interface for future Supabase swap
+        return {
+            getTasks, addTask, toggleTask, deleteTask,
+            getTimeline, addTimelineEntry, deleteTimelineEntry
+        };
+    })();
+
+    /* =========================================================
+       PAGES
+       ========================================================= */
+
+    // --- Home ---
+    function renderHome() {
+        const tasks = DataService.getTasks();
+        const timeline = DataService.getTimeline();
+        const pending = tasks.filter(t => !t.done).length;
+        const done = tasks.filter(t => t.done).length;
+
+        return `
+            <div class="home-greeting">Hey, Lucas.</div>
+            <p class="home-subtitle">準備好今天要推進什麼了嗎？</p>
+            <div class="home-grid">
+                <a class="home-card" href="#/tasks" onclick="Router.go('/tasks')">
+                    <div class="home-card-icon">&#9776;</div>
+                    <div class="home-card-title">任務清單</div>
+                    <div class="home-card-desc">管理每日目標與待辦事項</div>
+                    <div class="home-card-count">${pending} 項待完成 / ${done} 項已完成</div>
+                </a>
+                <a class="home-card" href="#/timeline" onclick="Router.go('/timeline')">
+                    <div class="home-card-icon">&#9202;</div>
+                    <div class="home-card-title">成長時間軸</div>
+                    <div class="home-card-desc">記錄里程碑與學習歷程</div>
+                    <div class="home-card-count">${timeline.length} 筆紀錄</div>
+                </a>
+            </div>
+        `;
+    }
+
+    // --- Tasks ---
+    function renderTasks() {
+        const tasks = DataService.getTasks();
+        const pending = tasks.filter(t => !t.done).length;
+        const done = tasks.filter(t => t.done).length;
+
+        const listHTML = tasks.length === 0
+            ? '<div class="task-empty">還沒有任何任務，新增一個吧！</div>'
+            : `<ul class="task-list">${tasks.map(t => `
+                <li class="task-item${t.done ? ' completed' : ''}">
+                    <div class="task-checkbox" onclick="TaskActions.toggle(${t.id})"></div>
+                    <span class="task-text" onclick="TaskActions.toggle(${t.id})">${escapeHTML(t.text)}</span>
+                    <button class="task-delete" onclick="TaskActions.remove(${t.id})" title="刪除">&times;</button>
+                </li>
+              `).join('')}</ul>`;
+
+        return `
+            <div class="page-header">
+                <button class="back-btn" onclick="Router.go('/')">&larr;</button>
+                <span class="page-title">任務清單</span>
+            </div>
+            <div class="task-input-group">
+                <input class="task-input" type="text" id="task-input" placeholder="新增任務..." onkeydown="if(event.key==='Enter')TaskActions.add()">
+                <button class="btn-primary" onclick="TaskActions.add()">新增</button>
+            </div>
+            <div class="task-stats">
+                <span><span class="stat-dot pending"></span> ${pending} 待完成</span>
+                <span><span class="stat-dot done"></span> ${done} 已完成</span>
+            </div>
+            ${listHTML}
+        `;
+    }
+
+    const TaskActions = {
+        add() {
+            const input = document.getElementById('task-input');
+            const text = input.value.trim();
+            if (!text) return;
+            DataService.addTask(text);
+            Router.render();
+            setTimeout(() => document.getElementById('task-input')?.focus(), 0);
+        },
+        toggle(id) {
+            DataService.toggleTask(id);
+            Router.render();
+        },
+        remove(id) {
+            DataService.deleteTask(id);
+            Router.render();
+        }
+    };
+
+    // --- Timeline ---
+    function renderTimeline() {
+        const entries = DataService.getTimeline();
+
+        const listHTML = entries.length === 0
+            ? '<div class="timeline-empty">還沒有紀錄。新增第一筆里程碑吧！</div>'
+            : `<div class="timeline-container">${entries.map(e => `
+                <div class="timeline-item">
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-date">${e.date}</div>
+                    <div class="timeline-content">
+                        <div class="timeline-title">${escapeHTML(e.title)}</div>
+                        <div class="timeline-desc">${escapeHTML(e.desc)}</div>
+                    </div>
+                </div>
+              `).join('')}</div>`;
+
+        return `
+            <div class="page-header">
+                <button class="back-btn" onclick="Router.go('/')">&larr;</button>
+                <span class="page-title">成長時間軸</span>
+            </div>
+            <div class="timeline-add-group">
+                <input class="task-input" type="text" id="tl-title" placeholder="標題（例：學會 Git）" style="flex:1" onkeydown="if(event.key==='Enter')document.getElementById('tl-desc').focus()">
+                <button class="btn-primary" onclick="TimelineActions.add()">新增</button>
+            </div>
+            <div style="margin-bottom:24px;">
+                <input class="task-input" type="text" id="tl-desc" placeholder="描述（選填）" style="width:100%" onkeydown="if(event.key==='Enter')TimelineActions.add()">
+            </div>
+            ${listHTML}
+        `;
+    }
+
+    const TimelineActions = {
+        add() {
+            const titleEl = document.getElementById('tl-title');
+            const descEl = document.getElementById('tl-desc');
+            const title = titleEl.value.trim();
+            if (!title) return;
+            DataService.addTimelineEntry(title, descEl.value.trim());
+            Router.render();
+            setTimeout(() => document.getElementById('tl-title')?.focus(), 0);
+        }
+    };
+
+    /* =========================================================
+       ROUTER — Hash-based SPA routing
+       ========================================================= */
+    const Router = (() => {
+        const routes = {
+            '/':         renderHome,
+            '/tasks':    renderTasks,
+            '/timeline': renderTimeline,
+        };
+
+        function getPath() {
+            return location.hash.slice(1) || '/';
+        }
+
+        function render() {
+            const path = getPath();
+            const renderFn = routes[path] || renderHome;
+            document.getElementById('app').innerHTML = renderFn();
+        }
+
+        function go(path) {
+            location.hash = '#' + path;
+        }
+
+        // Listen for hash changes
+        window.addEventListener('hashchange', render);
+
+        return { render, go };
+    })();
+
+    /* =========================================================
+       UTILS
+       ========================================================= */
+    function escapeHTML(str) {
+        const div = document.createElement('div');
+        div.textContent = str;
+        return div.innerHTML;
+    }
+
+    /* =========================================================
+       INIT
+       ========================================================= */
+    Router.render();
     </script>
-
-    <footer style="width:100%;text-align:center;padding:20px 0;color:var(--text-muted);font-size:0.75rem;">
-        Modified by Claude Code
-    </footer>
 </body>
 </html>
