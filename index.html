@@ -364,42 +364,49 @@
 
         .timeline-lane-line {
             position: relative;
-            height: 28px;
+            min-height: 48px;
             border-bottom: 1px solid var(--border);
         }
 
-        .timeline-dot {
+        .timeline-node {
             position: absolute;
-            bottom: -4px;
+            bottom: 0;
+            transform: translateX(-50%);
+            cursor: pointer;
+        }
+
+        .timeline-dot {
             width: 10px;
             height: 10px;
             border-radius: 50%;
             background: var(--primary);
-            cursor: pointer;
+            margin: 0 auto 4px;
         }
 
-        .timeline-dot:hover {
+        .timeline-node:hover .timeline-dot {
             background: #38bdf8;
         }
 
-        .timeline-tooltip {
-            position: absolute;
-            bottom: 14px;
-            left: 50%;
-            transform: translateX(-50%);
-            white-space: nowrap;
-            background: #020617;
-            color: var(--text);
-            padding: 2px 6px;
-            font-size: 0.7rem;
-            border-radius: 4px;
+        .timeline-label {
+            max-width: 140px;
+            padding: 4px 6px;
+            border-radius: 6px;
+            background: rgba(15, 23, 42, 0.9);
             border: 1px solid var(--border);
-            opacity: 0;
-            pointer-events: none;
+            font-size: 0.7rem;
+            color: var(--text-secondary);
+            white-space: normal;
         }
 
-        .timeline-dot:hover .timeline-tooltip {
-            opacity: 1;
+        .timeline-label-title {
+            color: var(--text);
+            font-weight: 600;
+            margin-bottom: 2px;
+        }
+
+        .timeline-label-date {
+            font-size: 0.65rem;
+            color: var(--text-muted);
         }
 
         .timeline-empty {
@@ -651,8 +658,12 @@
             if (!catEntries.length) return '';
 
             const dotsHTML = catEntries.map(e => `
-                <div class="timeline-dot" style="left:${dateToPercent(e.date)}%" data-id="${e.id}">
-                    <div class="timeline-tooltip">${e.date} · ${escapeHTML(e.title)}</div>
+                <div class="timeline-node" style="left:${dateToPercent(e.date)}%" data-id="${e.id}">
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-label">
+                        <div class="timeline-label-title">${escapeHTML(e.title)}</div>
+                        <div class="timeline-label-date">${e.date}</div>
+                    </div>
                 </div>
             `).join('');
 
@@ -718,7 +729,7 @@
         };
 
         function applyFilters() {
-            const dots = document.querySelectorAll('.timeline-dot');
+            const nodes = document.querySelectorAll('.timeline-node');
             const filtered = entries.filter(e => {
                 if (!state.cats.has(e.category)) return false;
                 if (state.start && e.date < state.start) return false;
@@ -731,9 +742,9 @@
             });
 
             const visibleIds = new Set(filtered.map(e => String(e.id)));
-            dots.forEach(dot => {
-                const id = dot.getAttribute('data-id');
-                dot.style.opacity = visibleIds.has(id) ? '1' : '0.18';
+            nodes.forEach(node => {
+                const id = node.getAttribute('data-id');
+                node.style.opacity = visibleIds.has(id) ? '1' : '0.18';
             });
         }
 
@@ -770,7 +781,7 @@
         });
 
         // 點擊節點顯示細節
-        const dots = document.querySelectorAll('.timeline-dot');
+        const dots = document.querySelectorAll('.timeline-node');
         dots.forEach(dot => {
             dot.addEventListener('click', () => {
                 const id = dot.getAttribute('data-id');
