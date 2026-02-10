@@ -330,72 +330,53 @@
         .timeline-main {
             flex: 1;
             position: relative;
-            overflow-x: auto;
+            overflow-x: hidden;
             padding-bottom: 16px;
         }
 
-        .timeline-years {
-            position: relative;
-            height: 18px;
-            margin-bottom: 8px;
+        .timeline-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
         }
 
-        .timeline-year-marker {
-            position: absolute;
-            top: 0;
-            transform: translateX(-50%);
-            font-size: 0.7rem;
+        .timeline-entry {
+            background: var(--bg-elevated);
+            border-radius: var(--radius-sm);
+            border: 1px solid var(--border);
+            padding: 10px 12px;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: background var(--transition), transform var(--transition), border-color var(--transition);
+        }
+
+        .timeline-entry:hover {
+            background: var(--bg-hover);
+            transform: translateY(-1px);
+            border-color: var(--primary);
+        }
+
+        .timeline-entry-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 4px;
+        }
+
+        .timeline-entry-date {
+            font-size: 0.75rem;
             color: var(--text-muted);
         }
 
-        .timeline-lanes {
-            position: relative;
+        .timeline-entry-title {
+            font-size: 0.9rem;
+            margin-bottom: 2px;
         }
 
-        .timeline-lane {
-            margin-bottom: 16px;
-        }
-
-        .timeline-lane-label {
+        .timeline-entry-desc {
             font-size: 0.8rem;
-            margin-bottom: 4px;
             color: var(--text-secondary);
-        }
-
-        .timeline-lane-line {
-            position: relative;
-            min-height: 48px;
-            border-bottom: 1px solid var(--border);
-        }
-
-        .timeline-node {
-            position: absolute;
-            bottom: 0;
-            transform: translateX(-50%);
-            cursor: pointer;
-        }
-
-        .timeline-dot {
-            width: 10px;
-            height: 10px;
-            border-radius: 50%;
-            background: var(--primary);
-            margin: 0 auto 4px;
-        }
-
-        .timeline-node:hover .timeline-dot {
-            background: #38bdf8;
-        }
-
-        .timeline-label {
-            max-width: 140px;
-            padding: 4px 6px;
-            border-radius: 6px;
-            background: rgba(15, 23, 42, 0.9);
-            border: 1px solid var(--border);
-            font-size: 0.7rem;
-            color: var(--text-secondary);
-            white-space: normal;
+            line-height: 1.4;
         }
 
         .timeline-label-title {
@@ -520,13 +501,14 @@
                 { id: 3, text: '設計成長時間軸介面', done: true, created: '2026-02-08' },
             ],
             timeline: [
+                { id: 8, date: '2026-02-09', category: '核心決策', title: '每日例行檢查機制', desc: '建立 daily-routine 文件與檢查流程，規劃每日自動檢查項目。' },
                 { id: 7, date: '2026-02-08', category: '核心決策', title: '開發方針', desc: '正式確立「專案經理(小賈) + 首席工程師(Claude)」合作模式。' },
-                { id: 6, date: '2026-02-08', category: '系統技能', title: '指令指揮官', desc: '解鎖「召喚 Claude Code」技能，實現高效開發協作。' },
-                { id: 5, date: '2026-02-08', category: '核心決策', title: '穩定性躍進', desc: '實作 Collect Mode，優化配額管理。' },
-                { id: 4, date: '2026-02-07', category: '網站開發', title: 'Nexus 基地台', desc: 'Lucas Nexus v1.0 上線 (GitHub Pages)。' },
-                { id: 3, date: '2026-02-04', category: '系統技能', title: '通訊整合', desc: '整合 LINE Webhook，具備發送通知能力。' },
-                { id: 2, date: '2026-02-03', category: '系統技能', title: '自動化首勝', desc: '學會透過瀏覽器建立 Google 行事曆。' },
-                { id: 1, date: '2026-02-02', category: '系統技能', title: '數位精靈覺醒', desc: 'Lucas 賦予我「小賈」之名。' },
+                { id: 6, date: '2026-02-08', category: '系統技能', title: '指令指揮官', desc: '解鎖「召喚 Claude Code」與 Gemini CLI 協作技能，形成多模型開發流程。' },
+                { id: 5, date: '2026-02-08', category: '核心決策', title: '穩定性躍進', desc: '實作 Collect Mode，優化配額管理與穩定性策略。' },
+                { id: 4, date: '2026-02-07', category: '網站開發', title: 'Nexus 基地台', desc: 'Lucas Nexus v1.0 上線 (GitHub Pages) 作為個人監控儀表板。' },
+                { id: 3, date: '2026-02-06', category: '系統技能', title: '長期記憶與技術索引', desc: '建立 MEMORY.md 與核心技術文件索引，整理 Cron、Calendar、Browser、自動化等能力。' },
+                { id: 2, date: '2026-02-03', category: '系統技能', title: '自動化首勝', desc: '學會透過瀏覽器自動建立 Google 行事曆並邀請參加者。' },
+                { id: 1, date: '2026-02-02', category: '系統技能', title: '數位精靈覺醒', desc: 'Lucas 賦予我「小賈」之名，正式啟動個人助手。' },
             ]
         };
 
@@ -614,7 +596,7 @@
         `;
     }
 
-    // --- Timeline (Multi-lane + Filters) ---
+    // --- Timeline (Vertical cards + Filters) ---
     function renderTimeline() {
         const entries = DataService.getTimeline();
 
@@ -634,44 +616,25 @@
             { key: '核心決策', label: '核心決策 / Decision' },
         ];
 
-        const dates = entries.map(e => new Date(e.date));
-        const minYear = Math.min(...dates.map(d => d.getFullYear())) - 1;
-        const maxYear = Math.max(...dates.map(d => d.getFullYear())) + 1;
+        // 依日期由新到舊排序，閱讀感覺比較像「更新日誌」
+        const sorted = [...entries].sort((a, b) => a.date < b.date ? 1 : -1);
 
-        function dateToPercent(dateStr) {
-            const d = new Date(dateStr);
-            const total = maxYear - minYear;
-            const pos = d.getFullYear() + d.getMonth() / 12 - minYear;
-            return (pos / total) * 100;
-        }
-
-        const yearsHTML = Array.from({ length: maxYear - minYear + 1 }).map((_, i) => {
-            const year = minYear + i;
-            const left = ((year - minYear) / (maxYear - minYear)) * 100;
-            return `<span class="timeline-year-marker" style="left:${left}%">${year}</span>`;
-        }).join('');
-
-        const lanesHTML = categories.map(cat => {
-            const catEntries = entries
-                .filter(e => e.category === cat.key)
-                .sort((a, b) => a.date < b.date ? -1 : 1);
-            if (!catEntries.length) return '';
-
-            const dotsHTML = catEntries.map(e => `
-                <div class="timeline-node" style="left:${dateToPercent(e.date)}%" data-id="${e.id}">
-                    <div class="timeline-dot"></div>
-                    <div class="timeline-label">
-                        <div class="timeline-label-title">${escapeHTML(e.title)}</div>
-                        <div class="timeline-label-date">${e.date}</div>
-                    </div>
-                </div>
-            `).join('');
-
+        const listHTML = sorted.map(e => {
+            const badgeClass = DataService.getCategoryClass(e.category);
+            const textForSearch = escapeHTML(((e.title || '') + (e.desc || '')).toLowerCase());
             return `
-                <div class="timeline-lane">
-                    <div class="timeline-lane-label">${cat.label}</div>
-                    <div class="timeline-lane-line">${dotsHTML}</div>
-                </div>
+                <article class="timeline-entry" 
+                         data-id="${e.id}" 
+                         data-category="${e.category}" 
+                         data-date="${e.date}" 
+                         data-text="${textForSearch}">
+                    <div class="timeline-entry-header">
+                        <span class="timeline-entry-date">${e.date}</span>
+                        <span class="timeline-badge ${badgeClass}">${escapeHTML(e.category)}</span>
+                    </div>
+                    <h3 class="timeline-entry-title">${escapeHTML(e.title)}</h3>
+                    ${e.desc ? `<p class="timeline-entry-desc">${escapeHTML(e.desc)}</p>` : ''}
+                </article>
             `;
         }).join('');
 
@@ -699,21 +662,22 @@
                     </div>
                 </aside>
                 <section class="timeline-main">
-                    <div class="timeline-years">${yearsHTML}</div>
-                    <div class="timeline-lanes">${lanesHTML}</div>
+                    <div class="timeline-list" id="timeline-list">
+                        ${listHTML}
+                    </div>
                 </section>
             </div>
         `;
 
         // 掛載後注入互動
-        setTimeout(() => setupTimelineInteractions(entries, categories, { minYear, maxYear }), 0);
+        setTimeout(() => setupTimelineInteractions(entries, categories), 0);
         return html;
     }
 
     /* =========================================================
        Timeline Interactions
        ========================================================= */
-    function setupTimelineInteractions(entries, categories, range) {
+    function setupTimelineInteractions(entries, categories) {
         const searchInput = document.getElementById('timeline-search');
         const startInput = document.getElementById('timeline-start');
         const endInput = document.getElementById('timeline-end');
@@ -729,22 +693,19 @@
         };
 
         function applyFilters() {
-            const nodes = document.querySelectorAll('.timeline-node');
-            const filtered = entries.filter(e => {
-                if (!state.cats.has(e.category)) return false;
-                if (state.start && e.date < state.start) return false;
-                if (state.end && e.date > state.end) return false;
-                if (state.search) {
-                    const text = (e.title || '') + (e.desc || '');
-                    if (!text.toLowerCase().includes(state.search)) return false;
-                }
-                return true;
-            });
+            const cards = document.querySelectorAll('.timeline-entry');
+            cards.forEach(card => {
+                const cat = card.getAttribute('data-category');
+                const date = card.getAttribute('data-date');
+                const text = card.getAttribute('data-text') || '';
 
-            const visibleIds = new Set(filtered.map(e => String(e.id)));
-            nodes.forEach(node => {
-                const id = node.getAttribute('data-id');
-                node.style.opacity = visibleIds.has(id) ? '1' : '0.18';
+                let visible = true;
+                if (!state.cats.has(cat)) visible = false;
+                if (state.start && date < state.start) visible = false;
+                if (state.end && date > state.end) visible = false;
+                if (state.search && !text.includes(state.search)) visible = false;
+
+                card.style.display = visible ? 'block' : 'none';
             });
         }
 
@@ -780,11 +741,11 @@
             applyFilters();
         });
 
-        // 點擊節點顯示細節
-        const dots = document.querySelectorAll('.timeline-node');
-        dots.forEach(dot => {
-            dot.addEventListener('click', () => {
-                const id = dot.getAttribute('data-id');
+        // 點擊卡片顯示細節
+        const cards = document.querySelectorAll('.timeline-entry');
+        cards.forEach(card => {
+            card.addEventListener('click', () => {
+                const id = card.getAttribute('data-id');
                 const ev = entries.find(e => String(e.id) === id);
                 if (!ev) return;
 
